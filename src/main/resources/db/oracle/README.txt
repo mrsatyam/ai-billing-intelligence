@@ -1,0 +1,11 @@
+-- How to load Oracle demo data (100 policies)
+--
+-- SQL*Plus / SQLcl / SQL Developer:
+--   @schema.sql
+--   @seed-data.sql
+--
+-- Then start the app with:
+--   mvn spring-boot:run -Dspring-boot.run.profiles=oracle -Dbilling.seed.enabled=false
+--
+-- Or skip these scripts and let Hibernate + H2DataSeeder create 100 rows when
+-- billing.seed.enabled=true (default on oracle profile).
