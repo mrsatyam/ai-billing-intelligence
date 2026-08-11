@@ -1,0 +1,33 @@
+:root {
+    --navy: #0b1c2c;
+    --navy-mid: #132a40;
+    --teal: #14b8a6;
+    --teal-bright: #2dd4bf;
+    --muted-light: #9db0c3;
+}
+
+.app-body {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at top left, #16324a 0%, var(--navy) 45%, #07131d 100%);
+    color: #e8eef4;
+}
+
+.bg-navy {
+    background-color: var(--navy-mid) !important;
+    border-bottom: 1px solid rgba(45, 212, 191, 0.15);
+}
+
+.text-teal {
+    color: var(--teal-bright) !important;
+}
+
+.text-muted-light {
+    color: var(--muted-light) !important;
+}
+
+.hero-panel {
+    background: linear-gradient(145deg, rgba(19, 42, 64, 0.9), rgba(11, 28, 44, 0.75));
+    border: 1px solid rgba(45, 212, 191, 0.2);
+    border-radius: 1rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
