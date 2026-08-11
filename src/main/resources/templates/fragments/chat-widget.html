@@ -1,0 +1,19 @@
+<div th:fragment="chatWidget" xmlns:th="http://www.thymeleaf.org">
+    <button type="button" id="chatFab" class="chat-fab" aria-label="Open AI assistant">AI</button>
+    <div id="chatPanel" class="chat-panel d-none">
+        <div class="chat-header">
+            <div>
+                <div class="fw-semibold text-white">Billing AI Assistant</div>
+                <div class="small text-muted-light">Ask about risk, recovery, or today's health</div>
+            </div>
+            <button type="button" id="chatClose" class="btn-close btn-close-white" aria-label="Close"></button>
+        </div>
+        <div id="chatMessages" class="chat-messages">
+            <div class="chat-bubble bot">Hi — ask me things like “Why is John's score high?”, “How many policies should we save today?”, or “Summarize today's billing health.”</div>
+        </div>
+        <form id="chatForm" class="chat-input-row">
+            <input type="text" id="chatInput" class="form-control" placeholder="Ask the billing AI…" autocomplete="off"/>
+            <button type="submit" class="btn btn-teal">Send</button>
+        </form>
+    </div>
+</div>

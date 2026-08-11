@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${appName} + ' · Command Center'">AI Billing Intelligence</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link th:href="@{/css/app.css}" rel="stylesheet"/>
+</head>
+<body class="app-body">
+<nav class="navbar navbar-expand-lg navbar-dark bg-navy px-3">
+    <a class="navbar-brand fw-semibold" th:href="@{/}">AI Billing Intelligence</a>
+    <div class="navbar-nav ms-auto flex-row gap-3">
+        <a class="nav-link active" th:href="@{/}">Dashboard</a>
+        <a class="nav-link" th:href="@{/policies/at-risk}">Policies at Risk</a>
+        <a class="nav-link" th:href="@{/simulator}">Simulator</a>
+    </div>
+</nav>
+
+<main class="container-fluid px-3 px-lg-4 py-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-end mb-4 gap-2">
+        <div>
+            <p class="text-teal text-uppercase small mb-1">Insurance command center</p>
+            <h1 class="h3 text-white mb-0">Billing Intelligence Dashboard</h1>
+        </div>
+        <p class="text-muted-light mb-0" th:text="'Monitoring ' + ${metrics.totalPolicies} + ' policies'">Monitoring policies</p>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-xl">
+            <a class="kpi-card d-block text-decoration-none" th:href="@{/policies/at-risk}">
+                <div class="kpi-label">Premium Due Today</div>
+                <div class="kpi-value" th:text="'₹' + ${#numbers.formatDecimal(metrics.premiumDueToday, 1, 'COMMA', 0, 'POINT')}">₹0</div>
+            </a>
+        </div>
+        <div class="col-6 col-xl">
+            <div class="kpi-card">
+                <div class="kpi-label">Collection Rate</div>
+                <div class="kpi-value" th:text="${metrics.collectionRate} + '%'">92%</div>
+            </div>
+        </div>
+        <div class="col-6 col-xl">
+            <a class="kpi-card kpi-alert d-block text-decoration-none" th:href="@{/policies/at-risk}">
+                <div class="kpi-label">Policies at Risk</div>
+                <div class="kpi-value" th:text="${metrics.policiesAtRisk}">0</div>
+                <div class="kpi-hint">Click to investigate →</div>
+            </a>
+        </div>
+        <div class="col-6 col-xl">
+            <div class="kpi-card">
+                <div class="kpi-label">Predicted Revenue Leakage</div>
+                <div class="kpi-value" th:text="'₹' + ${#numbers.formatDecimal(metrics.predictedRevenueLeakage, 1, 'COMMA', 0, 'POINT')}">₹0</div>
+            </div>
+        </div>
+        <div class="col-12 col-xl">
+            <div class="kpi-card">
+                <div class="kpi-label">AI Recommendations</div>
+                <div class="kpi-value" th:text="${metrics.aiRecommendations}">0</div>
+                <div class="kpi-hint" th:text="${metrics.approvedDecisions} + ' approved'">0 approved</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-lg-4">
+            <div class="panel h-100">
+                <h2 class="panel-title">Risk distribution</h2>
+                <div class="chart-wrap">
+                    <canvas id="riskChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="panel h-100">
+                <h2 class="panel-title">Collection trend</h2>
+                <div class="chart-wrap">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="panel h-100">
+                <h2 class="panel-title">Region risk heat map</h2>
+                <div id="regionHeatmap" class="heatmap-grid"></div>
+                <div class="heatmap-legend mt-3">
+                    <span>Lower risk density</span>
+                    <div class="heatmap-scale"></div>
+                    <span>Higher risk density</span>
+                </div>
+                <canvas id="regionChart" class="d-none"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="panel-title mb-0">Recent AI Decisions</h2>
+            <div class="d-flex gap-2">
+                <a class="btn btn-sm btn-outline-teal" th:href="@{/policies/at-risk}">View all at risk</a>
+                <a class="btn btn-sm btn-teal" th:href="@{/simulator}">Run Simulator</a>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-darkish align-middle mb-0">
+                <thead>
+                <tr>
+                    <th>Policy</th>
+                    <th>Customer</th>
+                    <th>Recommendation</th>
+                    <th>Success</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="d : ${recentDecisions}">
+                    <td th:text="${d.policy.policyNumber}">P0001</td>
+                    <td th:text="${d.policy.customer.name}">Name</td>
+                    <td th:text="${d.recommendation.label}">Action</td>
+                    <td th:text="${d.predictedSuccess} + '%'">80%</td>
+                    <td><span class="badge-status" th:classappend="${'status-' + d.status}" th:text="${d.status}">PENDING</span></td>
+                    <td><a class="link-teal" th:href="@{/policies/{id}(id=${d.policy.id})}">Open</a></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(recentDecisions)}">
+                    <td colspan="6" class="text-muted-light">No AI decisions yet.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<th:block th:replace="~{fragments/chat-widget :: chatWidget}"></th:block>
+<script th:inline="javascript">
+    window.dashboardCharts = {
+        riskLabels: /*[[${metrics.riskLabels}]]*/ [],
+        riskCounts: /*[[${metrics.riskCounts}]]*/ [],
+        regionLabels: /*[[${metrics.regionLabels}]]*/ [],
+        regionCounts: /*[[${metrics.regionRiskCounts}]]*/ [],
+        trendLabels: /*[[${metrics.collectionTrendLabels}]]*/ [],
+        trendValues: /*[[${metrics.collectionTrendValues}]]*/ []
+    };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

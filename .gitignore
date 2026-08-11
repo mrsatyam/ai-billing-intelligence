@@ -19,3 +19,6 @@ Thumbs.db
 *.mv.db
 *.trace.db
 .cursor/
+data/
+application-local.properties
+

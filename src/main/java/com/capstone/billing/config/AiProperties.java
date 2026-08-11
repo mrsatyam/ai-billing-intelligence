@@ -5,8 +5,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "billing.ai")
 public class AiProperties {
 
+    /**
+     * auto = Gemini when API key present, else rules.
+     * rules = force rule engine.
+     * gemini = require Gemini (falls back to rules on error).
+     */
     private String mode = "auto";
-    private final OpenAi openai = new OpenAi();
+    private final Gemini gemini = new Gemini();
 
     public String getMode() {
         return mode;
@@ -16,14 +21,21 @@ public class AiProperties {
         this.mode = mode;
     }
 
-    public OpenAi getOpenai() {
-        return openai;
+    public Gemini getGemini() {
+        return gemini;
     }
 
-    public static class OpenAi {
+    public boolean useGemini() {
+        if ("rules".equalsIgnoreCase(mode)) {
+            return false;
+        }
+        return gemini.isConfigured();
+    }
+
+    public static class Gemini {
         private String apiKey = "";
-        private String model = "gpt-4o-mini";
-        private String baseUrl = "https://api.openai.com/v1";
+        private String model = "gemini-3.1-flash-lite";
+        private String baseUrl = "https://generativelanguage.googleapis.com/v1beta";
 
         public String getApiKey() {
             return apiKey;

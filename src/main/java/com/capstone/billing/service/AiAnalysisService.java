@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Thin service that loads policy graphs and delegates to the active {@link AiEngine}.
- * (Hybrid OpenAI facade will wrap this in a later todo.)
+ * Thin service that loads policy graphs and delegates to the active {@link AiEngine}
+ * (Gemini hybrid facade with rule-based fallback).
  */
 @Service
 public class AiAnalysisService {

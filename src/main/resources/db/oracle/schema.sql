@@ -90,3 +90,4 @@ CREATE TABLE ai_decisions (
 CREATE INDEX idx_policies_risk ON policies (risk_score);
 CREATE INDEX idx_policies_status ON policies (status);
 CREATE INDEX idx_policies_due ON policies (due_date);
+

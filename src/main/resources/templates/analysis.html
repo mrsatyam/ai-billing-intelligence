@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="'AI Analysis · ' + ${policy.policyNumber}">AI Analysis</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link th:href="@{/css/app.css}" rel="stylesheet"/>
+</head>
+<body class="app-body">
+<nav class="navbar navbar-expand-lg navbar-dark bg-navy px-3">
+    <a class="navbar-brand fw-semibold" th:href="@{/}">AI Billing Intelligence</a>
+    <div class="navbar-nav ms-auto flex-row gap-3">
+        <a class="nav-link" th:href="@{/}">Dashboard</a>
+        <a class="nav-link" th:href="@{/policies/at-risk}">Policies at Risk</a>
+        <a class="nav-link" th:href="@{/simulator}">Simulator</a>
+    </div>
+</nav>
+
+<main class="container-fluid px-3 px-lg-4 py-4">
+    <div class="mb-4">
+        <a class="link-teal small" th:href="@{/policies/at-risk}">← Back to at-risk list</a>
+        <h1 class="h3 text-white mt-2 mb-1" th:text="'AI Analysis · ' + ${customer.name}">AI Analysis</h1>
+        <p class="text-muted-light mb-0"
+           th:text="${policy.policyNumber} + ' · ' + ${policy.policyType} + ' · Risk ' + ${policy.riskScore} + '%'">
+            Policy
+        </p>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-lg-4">
+            <div class="panel h-100">
+                <h2 class="panel-title">Customer Profile</h2>
+                <dl class="profile-grid mb-0">
+                    <dt>Name</dt><dd th:text="${customer.name}">Name</dd>
+                    <dt>Age</dt><dd th:text="${customer.age}">30</dd>
+                    <dt>Occupation</dt><dd th:text="${customer.occupation}">—</dd>
+                    <dt>Income Segment</dt><dd th:text="${customer.incomeSegment}">MID</dd>
+                    <dt>Region</dt><dd th:text="${customer.region}">—</dd>
+                    <dt>Payment Method</dt><dd th:text="${customer.preferredPaymentMethod}">UPI</dd>
+                    <dt>Salary Credit Day</dt><dd th:text="${customer.salaryCreditDay}">5</dd>
+                    <dt>Policy Type</dt><dd th:text="${policy.policyType}">MOTOR</dd>
+                    <dt>Premium</dt>
+                    <dd th:text="'₹' + ${#numbers.formatDecimal(policy.premium, 1, 'COMMA', 0, 'POINT')}">₹0</dd>
+                    <dt>AutoPay</dt><dd th:text="${policy.autoPay} ? 'ON' : 'OFF'">OFF</dd>
+                </dl>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="panel h-100">
+                <h2 class="panel-title">Payment History</h2>
+                <div class="table-responsive">
+                    <table class="table table-darkish table-sm mb-0">
+                        <thead>
+                        <tr><th>Due</th><th>Paid</th><th>Flags</th></tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="p : ${payments}">
+                            <td th:text="${p.dueDate}">2026-01-01</td>
+                            <td th:text="${p.paidDate != null ? p.paidDate : '—'}">—</td>
+                            <td>
+                                <span th:if="${p.missed}" class="badge text-bg-danger">Missed</span>
+                                <span th:if="${p.late}" class="badge text-bg-warning">Late</span>
+                                <span th:if="${!p.missed and !p.late}" class="badge text-bg-success">On time</span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="panel h-100">
+                <h2 class="panel-title">Claims</h2>
+                <div th:if="${#lists.isEmpty(claims)}" class="text-muted-light">No claims on file.</div>
+                <ul class="list-unstyled mb-0" th:unless="${#lists.isEmpty(claims)}">
+                    <li class="mb-2" th:each="c : ${claims}">
+                        <div class="fw-semibold" th:text="'₹' + ${#numbers.formatDecimal(c.amount, 1, 'COMMA', 0, 'POINT')}">₹0</div>
+                        <div class="small text-muted-light"
+                             th:text="${c.status} + ' · ' + ${c.claimDate} + ' · ' + ${c.description}">claim</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="ai-box mb-4">
+        <div class="d-flex flex-wrap justify-content-between gap-2 mb-3">
+            <div>
+                <p class="text-teal text-uppercase small mb-1">AI Reasoning</p>
+                <h2 class="h4 text-white mb-0" th:text="${explanation.headline}">High risk</h2>
+            </div>
+            <div class="success-meter">
+                <div class="small text-muted-light">Predicted success</div>
+                <div class="display-6 text-teal mb-0" th:text="${recommendation.predictedSuccess} + '%'">87%</div>
+            </div>
+        </div>
+        <p class="lead-ai" th:text="${explanation.narrative}">Narrative</p>
+        <div class="row g-3 mt-1">
+            <div class="col-md-6">
+                <h3 class="h6 text-white">Why this score</h3>
+                <ul>
+                    <li th:each="f : ${explanation.whyHighRisk}" th:text="${f}">factor</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h3 class="h6 text-white">Mitigating signals</h3>
+                <ul>
+                    <li th:each="f : ${explanation.mitigatingFactors}" th:text="${f}">factor</li>
+                </ul>
+            </div>
+        </div>
+        <hr class="border-secondary"/>
+        <h3 class="h6 text-white">Recommendation</h3>
+        <ul class="rec-checks">
+            <li th:text="'✔ ' + ${recommendation.primaryAction.label}">✔ Primary</li>
+            <li th:each="a : ${recommendation.supportingActions}" th:text="'✔ ' + ${a.label}">✔ Support</li>
+        </ul>
+        <p class="text-muted-light small mb-3" th:text="${recommendation.reasoning}">reasoning</p>
+
+        <form th:if="${pendingDecision != null and pendingDecision.status.name() == 'PENDING'}"
+              th:action="@{/api/decisions/{id}/approve(id=${pendingDecision.id})}"
+              method="post" class="d-inline">
+            <button type="submit" class="btn btn-teal btn-lg px-4">Approve</button>
+        </form>
+        <div th:if="${pendingDecision != null and pendingDecision.status.name() != 'PENDING'}"
+             class="badge-status" th:classappend="${'status-' + pendingDecision.status}"
+             th:text="'Decision ' + ${pendingDecision.status}">APPROVED</div>
+    </div>
+
+    <div class="panel mb-4" th:attr="data-policy-id=${policy.id}">
+        <h2 class="panel-title mb-3">AI Communications &amp; Payment Plans</h2>
+        <ul class="nav nav-pills mb-3" id="commsTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="email-tab" data-bs-toggle="pill" data-bs-target="#emailPane" type="button">Email</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="call-tab" data-bs-toggle="pill" data-bs-target="#callPane" type="button">Call Script</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="plan-tab" data-bs-toggle="pill" data-bs-target="#planPane" type="button">Payment Plans</button>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="emailPane" role="tabpanel">
+                <button type="button" class="btn btn-teal btn-sm mb-3" id="btnGenerateEmail">Generate AI Email</button>
+                <div id="emailResult" class="comms-result text-muted-light">Click generate to draft subject, body, tone, and language.</div>
+            </div>
+            <div class="tab-pane fade" id="callPane" role="tabpanel">
+                <button type="button" class="btn btn-teal btn-sm mb-3" id="btnGenerateCall">Generate AI Call Script</button>
+                <div id="callResult" class="comms-result text-muted-light">Click generate for an agent collection script.</div>
+            </div>
+            <div class="tab-pane fade" id="planPane" role="tabpanel">
+                <button type="button" class="btn btn-teal btn-sm mb-3" id="btnGeneratePlans">Generate AI Payment Plans</button>
+                <div id="planResult" class="comms-result text-muted-light">Click generate for 3 / 6 / 9 month options.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel" th:if="${!#lists.isEmpty(history)}">
+        <h2 class="panel-title">Decision workflow history</h2>
+        <div class="table-responsive">
+            <table class="table table-darkish mb-0">
+                <thead>
+                <tr><th>When</th><th>Action</th><th>Success</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="h : ${history}">
+                    <td th:text="${h.createdAt}">—</td>
+                    <td th:text="${h.recommendation.label}">—</td>
+                    <td th:text="${h.predictedSuccess} + '%'">—</td>
+                    <td><span class="badge-status" th:classappend="${'status-' + h.status}" th:text="${h.status}">PENDING</span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+<th:block th:replace="~{fragments/chat-widget :: chatWidget}"></th:block>
+<script th:inline="javascript">
+    window.analysisPage = { policyId: /*[[${policy.id}]]*/ 0 };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

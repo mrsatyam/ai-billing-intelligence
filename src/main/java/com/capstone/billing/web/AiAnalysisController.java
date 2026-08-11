@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Temporary REST surface to exercise rule-based AI before full UI pages land.
+ * REST surface for AI analysis features used by the analysis page UI.
  */
 @RestController
 @RequestMapping("/api/ai")

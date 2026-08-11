@@ -1,174 +1,139 @@
 # AI Billing Intelligence Platform
 
-> **Transforming Traditional Billing into Autonomous Revenue Intelligence**
+Self-learning billing decision engine for P&C insurers (India demo: INR / UPI).
 
-An AI-powered proof of concept that demonstrates how Property & Casualty (P&C) insurers can leverage Artificial Intelligence to predict payment delinquency, optimize premium collections, prevent policy lapses, and improve customer experience through intelligent billing decisions.
-
----
-
-## 🚀 Problem Statement
-
-Traditional insurance billing systems are primarily transactional—they generate invoices, process payments, and send generic reminders. These rule-based systems are reactive, slow to adapt, and unable to proactively identify customers at risk of delinquency or policy cancellation.
-
-This results in:
-
-- Premium leakage
-- Increased delinquency
-- Higher policy lapse rates
-- Customer dissatisfaction
-- Revenue loss
-- Higher operational costs
+Hybrid AI: **Gemini** when `billing.ai.gemini.api-key` is set, otherwise a rich **rule-based** engine so the demo always works offline.
 
 ---
 
-## 💡 Solution
+## Quick start
 
-AI Billing Intelligence Platform transforms billing into an intelligent decision engine.
+**Requirements:** Java 17+ and Maven 3.9+
 
-Instead of simply generating invoices, AI continuously analyzes customer behavior, predicts payment risks, recommends personalized collection strategies, and assists billing teams in maximizing premium recovery.
-
----
-
-## 🎯 Key Features
-
-### 📊 Executive Dashboard
-- Premium collection KPIs
-- Delinquency trends
-- Policies at risk
-- Revenue leakage insights
-- AI-generated recommendations
-
-### 🤖 AI Delinquency Prediction
-Predict customers likely to:
-- Miss premium payments
-- Delay payments
-- Cancel policies
-
-### 🧠 Intelligent Collection Recommendations
-AI recommends personalized actions such as:
-- Reminder notifications
-- Installment plans
-- Grace period extensions
-- Agent follow-ups
-- Retention campaigns
-
-### 💬 AI Billing Assistant
-Ask questions like:
-- Which customers are at highest risk?
-- Why is this policy considered high risk?
-- What is today's collection outlook?
-
-### 📈 Explainable AI
-Every recommendation includes:
-- Risk score
-- Confidence level
-- Key contributing factors
-- Business reasoning
-
-### 🔄 Autonomous Decision Workflow
-AI assists billing teams by:
-1. Predicting payment risk
-2. Selecting the best collection strategy
-3. Generating personalized communication
-4. Tracking outcomes
-5. Continuously improving recommendations
-
----
-
-## 🏗 Architecture
-
+```powershell
+cd ai-billing-intelligence
+mvn spring-boot:run
 ```
-Browser
-      │
-      ▼
-Spring Boot Application
-      │
- ├── Dashboard Module
- ├── Billing Module
- ├── AI Decision Engine
- ├── Recommendation Engine
- ├── Chat Assistant
- └── REST APIs
-      │
-      ▼
-Database (H2 / MySQL)
-      │
-      ▼
-AI Models / LLM APIs
+
+Open **http://localhost:8080**
+
+### Enable Gemini (optional)
+
+In [`src/main/resources/application.properties`](src/main/resources/application.properties):
+
+```properties
+billing.ai.gemini.api-key=YOUR_GEMINI_API_KEY
+billing.ai.gemini.model=gemini-3.1-flash-lite
+```
+
+Or via environment:
+
+```powershell
+$env:GEMINI_API_KEY="YOUR_GEMINI_API_KEY"
+mvn spring-boot:run
+```
+
+Check provider: **http://localhost:8080/api/ai/status**
+
+> Do not commit real API keys. Prefer env vars or a local untracked override.
+
+### Build runnable JAR
+
+```powershell
+mvn -DskipTests package
+java -jar target/ai-billing-intelligence-0.0.1-SNAPSHOT.jar
 ```
 
 ---
 
-## 🛠 Technology Stack
+## Judge / demo flow
 
-### Backend
-- Java 21
-- Spring Boot 3
-- Spring MVC
-- Spring Data JPA
-- Spring AI / OpenAI API
+1. **Dashboard** `/` — KPIs, risk doughnut, collection trend, region heat map, recent AI decisions  
+2. Click **Policies at Risk** — table with policy, customer, risk %, recommendation  
+3. Open a customer (try **P1234 / John**) — AI analysis, explainability, **Approve**  
+4. Generate **Email / Call Script / Payment Plans** on the analysis page  
+5. **Simulator** `/simulator` — click **Run AI** for scan animation + recovery + streamed recommendations  
+6. Floating **AI chat** (bottom-right) — ask billing health / John’s risk / save today  
 
-### Frontend
-- HTML5
-- Bootstrap 5
-- JavaScript
-- Chart.js
-
-### Database
-- H2 Database
-- MySQL
-
-### Build
-- Maven
+H2 console: **http://localhost:8080/h2-console**  
+JDBC URL `jdbc:h2:mem:billingdb`, user `sa`, blank password.
 
 ---
 
-## 📈 Business Value
+## Features
 
-The platform enables insurers to:
+| Area | What you get |
+|------|----------------|
+| Dashboard | Premium due, collection rate, at-risk count, leakage, AI recs + charts |
+| Delinquency | Risk score + factors (rules + optional Gemini narrative) |
+| Collection AI | WhatsApp / agent call / installments / AutoPay / grace |
+| Explainable AI | Why the score is high + mitigating signals |
+| Comms | AI email + call script (on demand) |
+| Plans | 3 / 6 / 9 month installment options |
+| Chat | Floating assistant with KPI / policy context |
+| Simulator | Bulk scan with animated progress + recommendation parade |
 
-- Increase premium collection rates
-- Reduce payment delinquency
-- Prevent policy lapses
-- Improve customer satisfaction
-- Lower operational costs
-- Improve capital efficiency
-- Reduce premium leakage
-
----
-
-## 🚀 Future Enhancements
-
-- Multi-Agent AI Orchestration
-- Predictive Revenue Forecasting
-- AI-powered Payment Plan Negotiation
-- WhatsApp & Email Integration
-- Fraud Detection
-- Customer Financial Health Score
-- Agent Performance Analytics
+Seed data: **100** India-localized policies (`billing.seed.policy-count`).
 
 ---
 
-## 🎯 Project Goal
+## Architecture
 
-Move from:
-
-> **Traditional Billing System**
-
-to
-
-> **Autonomous Billing Intelligence Platform**
-
-that predicts, recommends, learns, and continuously optimizes premium collections.
+```
+Browser (Thymeleaf + Bootstrap + Chart.js)
+        │
+        ▼
+Spring Boot MVC + REST
+        │
+        ├── Dashboard / Policy / Decision / Simulator / Chat
+        │
+        ▼
+AiFacade (Gemini when keyed → else RuleBasedAiEngine)
+        │
+        ▼
+H2 (default)  |  Oracle profile + SQL scripts under db/oracle/
+```
 
 ---
 
-## 📷 Screenshots
+## Tech stack
 
-*(To be added)*
+- Java 17+ / Spring Boot 3.3 / Spring Web / Thymeleaf / Spring Data JPA  
+- H2 (default) · Oracle scripts + `application-oracle.properties`  
+- Gemini API (hybrid) · Bootstrap 5 · Chart.js · Vanilla JS  
+- Single Spring Boot JAR
 
 ---
 
-## 👨‍💻 Author
+## Oracle (optional)
 
-Developed as a Capstone Project demonstrating the application of Artificial Intelligence in modern P&C Insurance Billing Systems.
+```powershell
+# Apply SQL*Plus scripts, then:
+mvn spring-boot:run "-Dspring-boot.run.profiles=oracle" "-Dbilling.seed.enabled=false"
+```
+
+Scripts: [`src/main/resources/db/oracle/schema.sql`](src/main/resources/db/oracle/schema.sql), [`seed-data.sql`](src/main/resources/db/oracle/seed-data.sql)
+
+Set `ORACLE_JDBC_URL`, `ORACLE_USER`, `ORACLE_PASSWORD`.
+
+---
+
+## Useful APIs
+
+| Method | Path |
+|--------|------|
+| GET | `/api/dashboard/metrics` |
+| GET | `/api/ai/status` |
+| GET | `/api/ai/policies/{id}/predict` |
+| GET | `/api/ai/policies/{id}/email` |
+| GET | `/api/ai/policies/{id}/call-script` |
+| GET | `/api/ai/policies/{id}/payment-plans` |
+| POST | `/api/chat` body `{"message":"..."}` |
+| POST | `/api/simulator/run` |
+| POST | `/api/decisions/{id}/approve` |
+
+---
+
+## Project goal
+
+Move from traditional “manage bills” workflows to an **autonomous billing intelligence** loop: predict → recommend → communicate → approve → recover.
