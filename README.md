@@ -48,6 +48,7 @@ java -jar target/ai-billing-intelligence-0.0.1-SNAPSHOT.jar
 
 ## Judge / demo flow
 
+0. **Pitch deck** `/presentation` — 8 slides (problem → how AI helps → click path)  
 1. **Dashboard** `/` — KPIs, risk doughnut, collection trend, region heat map, recent AI decisions  
 2. Click **Policies at Risk** — table with policy, customer, risk %, recommendation  
 3. Open a customer (try **P1234 / John**) — AI analysis, explainability, **Approve**  

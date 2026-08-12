@@ -31,9 +31,17 @@ public class AiFacade implements AiEngine {
     private static final Logger log = LoggerFactory.getLogger(AiFacade.class);
 
     private static final String SYSTEM = """
-            You are an Insurance Billing Expert for Property & Casualty insurers in India.
-            Be concise, practical, and customer-friendly. Prefer UPI, installments, and agent calls
-            over legal notices. Currency is INR (₹). Never invent policy numbers.
+            You are an Insurance Billing Expert briefing P&C billing managers and collection admins in India.
+            Write in third person about the customer (name, "the customer", "this policy") — never "you" or "your".
+            Be concise and practical. Prefer UPI, installments, and agent calls over legal notices.
+            Currency is INR (₹). Never invent policy numbers.
+            """;
+
+    private static final String CUSTOMER_FACING = """
+            You are an Insurance Billing Expert drafting customer-facing copy for P&C insurers in India.
+            Address the policyholder in second person ("you" / "your"). Be empathetic and practical.
+            Prefer UPI, installments, and agent calls over legal notices. Currency is INR (₹).
+            Never invent policy numbers.
             """;
 
     private final RuleBasedAiEngine rules;
@@ -55,7 +63,8 @@ public class AiFacade implements AiEngine {
             return baseline;
         }
         String user = contextBlock(context)
-                + "\nReturn JSON: {\"summary\": string, \"factors\": string[] } "
+                + "\nWrite an internal admin summary (third person). Return JSON: "
+                + "{\"summary\": string, \"factors\": string[] } "
                 + "Use riskScore=" + baseline.getRiskScore() + " as given. Keep factors short.";
         Optional<JsonNode> json = geminiClient.generateJson(SYSTEM, user);
         if (json.isEmpty()) {
@@ -80,7 +89,8 @@ public class AiFacade implements AiEngine {
             return baseline;
         }
         String user = contextBlock(context)
-                + "\nSuggest a collection strategy. Return JSON: "
+                + "\nSuggest a collection strategy for the billing admin. "
+                + "Reasoning must be third person (about the customer, not to them). Return JSON: "
                 + "{\"primaryAction\": one of "
                 + enumNames()
                 + ", \"supportingActions\": string[], \"reasoning\": string, \"predictedSuccess\": number 55-95, "
@@ -128,7 +138,9 @@ public class AiFacade implements AiEngine {
         }
         String user = contextBlock(context)
                 + "\nRisk score is " + baseline.getRiskScore()
-                + "%. Explain WHY in executive-friendly language. Return JSON: "
+                + "%. Write an internal briefing for a billing admin reviewing this case. "
+                + "Use third person only (e.g. the customer / this policy / their occupation). "
+                + "Do not address the policyholder. Do not draft a customer message. Return JSON: "
                 + "{\"headline\": string, \"whyHighRisk\": string[], \"mitigatingFactors\": string[], \"narrative\": string}";
         Optional<JsonNode> json = geminiClient.generateJson(SYSTEM, user);
         if (json.isEmpty()) {
@@ -155,7 +167,7 @@ public class AiFacade implements AiEngine {
         String user = contextBlock(context)
                 + "\nGenerate a collection email for India. Return JSON: "
                 + "{\"subject\": string, \"body\": string, \"tone\": string, \"language\": string}";
-        Optional<JsonNode> json = geminiClient.generateJson(SYSTEM, user);
+        Optional<JsonNode> json = geminiClient.generateJson(CUSTOMER_FACING, user);
         if (json.isEmpty()) {
             return baseline;
         }
@@ -184,7 +196,7 @@ public class AiFacade implements AiEngine {
         String user = contextBlock(context)
                 + "\nWrite a short collection call script for an Indian agent (Hinglish OK). Return JSON: "
                 + "{\"opening\": string, \"fullScript\": string, \"closing\": string, \"tone\": string}";
-        Optional<JsonNode> json = geminiClient.generateJson(SYSTEM, user);
+        Optional<JsonNode> json = geminiClient.generateJson(CUSTOMER_FACING, user);
         if (json.isEmpty()) {
             return baseline;
         }

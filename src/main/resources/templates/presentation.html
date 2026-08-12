@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>AI Billing Intelligence · Demo Pitch</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/presentation.css"/>
+</head>
+<body class="deck-body">
+<header class="deck-topbar">
+    <span>AI Billing Intelligence</span>
+    <span class="deck-hint">← → or click · Esc to exit · <a href="/">Open app</a></span>
+    <span id="slideCounter">1 / 8</span>
+</header>
+
+<main id="deck">
+    <section class="slide active" data-title="Title">
+        <p class="eyebrow">Capstone · P&amp;C Insurance</p>
+        <h1>AI Billing Intelligence</h1>
+        <p class="tagline">A self-learning billing decision engine — AI decides what should happen next for every policy.</p>
+        <p class="sub">From “Manage Bills” → “Predict · Recommend · Recover”</p>
+    </section>
+
+    <section class="slide" data-title="Problem">
+        <p class="eyebrow">The problem</p>
+        <h2>Traditional billing is reactive</h2>
+        <ul class="bullets">
+            <li>Invoices and generic reminders — no personalization</li>
+            <li>Delinquency discovered too late</li>
+            <li>Premium leakage &amp; policy lapses</li>
+            <li>Agents lack explainable guidance</li>
+        </ul>
+        <p class="callout">Result: revenue loss, higher ops cost, weaker customer experience.</p>
+    </section>
+
+    <section class="slide" data-title="Solution">
+        <p class="eyebrow">Our solution</p>
+        <h2>An insurance billing command center</h2>
+        <div class="grid-3">
+            <div class="card-lite">
+                <h3>Predict</h3>
+                <p>Delinquency risk score per policy from behaviour, income, claims, AutoPay, region.</p>
+            </div>
+            <div class="card-lite">
+                <h3>Recommend</h3>
+                <p>WhatsApp, agent call, installments, grace, AutoPay discount — with predicted success.</p>
+            </div>
+            <div class="card-lite">
+                <h3>Act</h3>
+                <p>Draft email &amp; call scripts, payment plans, manager Approve → workflow saved.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide" data-title="How AI helps">
+        <p class="eyebrow">How AI helps</p>
+        <h2>Hybrid intelligence</h2>
+        <div class="two-col">
+            <div>
+                <h3>Always-on rules</h3>
+                <ul class="bullets tight">
+                    <li>Stable risk scoring</li>
+                    <li>Deterministic plans (3/6/9 mo)</li>
+                    <li>Works offline for demos</li>
+                </ul>
+            </div>
+            <div>
+                <h3>Gemini (when keyed)</h3>
+                <ul class="bullets tight">
+                    <li>Human-like reasoning &amp; chat</li>
+                    <li>Personalized email &amp; call scripts</li>
+                    <li>Executive-friendly explanations</li>
+                </ul>
+            </div>
+        </div>
+        <p class="callout">Judges see “magic” narratives; scores stay business-grounded.</p>
+    </section>
+
+    <section class="slide" data-title="AI features">
+        <p class="eyebrow">AI feature set</p>
+        <h2>Seven capabilities in one jar</h2>
+        <ol class="feature-list">
+            <li><strong>Delinquency prediction</strong> — risk %</li>
+            <li><strong>Collection recommendation</strong> — next best action</li>
+            <li><strong>Explainable AI</strong> — why the score is high</li>
+            <li><strong>Email generator</strong> — subject, body, tone</li>
+            <li><strong>Call script</strong> — for collection agents</li>
+            <li><strong>Payment plan generator</strong> — 3 / 6 / 9 months</li>
+            <li><strong>Chat assistant</strong> — floating Q&amp;A on billing health</li>
+        </ol>
+    </section>
+
+    <section class="slide" data-title="Demo path">
+        <p class="eyebrow">Live demo path (5 minutes)</p>
+        <h2>What to click</h2>
+        <ol class="steps">
+            <li><strong>Dashboard</strong> — KPIs, charts, heat map</li>
+            <li><strong>Policies at Risk</strong> — sort by risk, pick John (P1234)</li>
+            <li><strong>AI Analysis</strong> — reasoning box → Approve</li>
+            <li><strong>Generate</strong> Email / Call / Plans</li>
+            <li><strong>Simulator</strong> — Run AI → watch recommendations stream</li>
+            <li><strong>Chat</strong> — “Summarize today's billing health”</li>
+        </ol>
+        <p class="sub"><a class="deck-link" href="/">Launch dashboard →</a> &nbsp; <a class="deck-link" href="/simulator">Simulator →</a></p>
+    </section>
+
+    <section class="slide" data-title="Architecture">
+        <p class="eyebrow">Under the hood</p>
+        <h2>Simple, demo-ready architecture</h2>
+        <pre class="arch">Browser
+  → Spring Boot (MVC + REST)
+    → AiFacade (Gemini ⇄ Rules)
+      → Decision Service
+        → H2 Database
+          → Dashboard / Analysis / Simulator</pre>
+        <p class="sub">Java · Spring Boot 3 · Thymeleaf · Bootstrap · Chart.js · Gemini API</p>
+    </section>
+
+    <section class="slide" data-title="Close">
+        <p class="eyebrow">Takeaway</p>
+        <h1 class="close-title">AI doesn’t just score risk — it tells the team what to do next.</h1>
+        <p class="tagline">Predict leakage. Personalize recovery. Approve with confidence.</p>
+        <div class="cta-row">
+            <a class="btn-deck" href="/">Open Command Center</a>
+            <a class="btn-deck ghost" href="/simulator">Run Simulator</a>
+        </div>
+    </section>
+</main>
+
+<button type="button" class="nav-btn prev" id="prevBtn" aria-label="Previous">‹</button>
+<button type="button" class="nav-btn next" id="nextBtn" aria-label="Next">›</button>
+
+<script src="/js/presentation.js"></script>
+</body>
+</html>

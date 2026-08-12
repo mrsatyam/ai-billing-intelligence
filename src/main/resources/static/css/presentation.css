@@ -1,0 +1,199 @@
+:root {
+    --navy: #0b1c2c;
+    --teal: #2dd4bf;
+    --muted: #9db0c3;
+    --text: #e8eef4;
+}
+
+.deck-body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+        radial-gradient(ellipse at 20% 0%, #1a3a52 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 100%, #0f2a3a 0%, transparent 45%),
+        var(--navy);
+    color: var(--text);
+    font-family: "Segoe UI", system-ui, sans-serif;
+    overflow: hidden;
+}
+
+.deck-topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+    background: rgba(7, 19, 29, 0.55);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(45, 212, 191, 0.15);
+}
+
+.deck-topbar a { color: var(--teal); text-decoration: none; }
+.deck-hint { opacity: 0.85; }
+
+#deck {
+    height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 4rem 2rem 3rem;
+}
+
+.slide {
+    display: none;
+    width: min(920px, 100%);
+    animation: fadeIn 0.35s ease;
+}
+
+.slide.active { display: block; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--teal);
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.slide h1 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 750;
+    line-height: 1.15;
+    margin: 0 0 1rem;
+}
+
+.slide h2 {
+    font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+    font-weight: 700;
+    margin: 0 0 1.25rem;
+}
+
+.slide h3 {
+    color: var(--teal);
+    font-size: 1.1rem;
+    margin-bottom: 0.4rem;
+}
+
+.tagline {
+    font-size: 1.25rem;
+    color: #dbeafe;
+    max-width: 38rem;
+    line-height: 1.45;
+}
+
+.sub { color: var(--muted); margin-top: 1.25rem; }
+
+.bullets {
+    font-size: 1.2rem;
+    line-height: 1.55;
+    padding-left: 1.2rem;
+    max-width: 40rem;
+}
+.bullets.tight { font-size: 1.05rem; }
+.bullets li { margin-bottom: 0.55rem; }
+
+.callout {
+    margin-top: 1.5rem;
+    padding: 0.9rem 1.1rem;
+    border-left: 3px solid var(--teal);
+    background: rgba(45, 212, 191, 0.08);
+    color: #ecfdf5;
+    max-width: 40rem;
+}
+
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.card-lite {
+    background: rgba(19, 42, 64, 0.75);
+    border: 1px solid rgba(45, 212, 191, 0.22);
+    border-radius: 0.85rem;
+    padding: 1.1rem 1.15rem;
+}
+
+.card-lite p { color: var(--muted); margin: 0; line-height: 1.4; }
+
+.two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+@media (max-width: 720px) {
+    .two-col { grid-template-columns: 1fr; }
+    .deck-hint { display: none; }
+}
+
+.feature-list, .steps {
+    font-size: 1.1rem;
+    line-height: 1.55;
+    padding-left: 1.25rem;
+}
+.feature-list li, .steps li { margin-bottom: 0.45rem; }
+
+.arch {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(45, 212, 191, 0.2);
+    border-radius: 0.75rem;
+    padding: 1.25rem 1.4rem;
+    color: #99f6e4;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    overflow-x: auto;
+}
+
+.close-title {
+    font-size: clamp(1.6rem, 4vw, 2.5rem) !important;
+    max-width: 40rem;
+}
+
+.cta-row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.75rem; }
+
+.btn-deck {
+    display: inline-block;
+    padding: 0.7rem 1.25rem;
+    border-radius: 0.55rem;
+    background: var(--teal);
+    color: #042f2e;
+    font-weight: 700;
+    text-decoration: none;
+}
+.btn-deck.ghost {
+    background: transparent;
+    border: 1px solid var(--teal);
+    color: var(--teal);
+}
+.deck-link { color: var(--teal); font-weight: 600; }
+
+.nav-btn {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 999px;
+    border: 1px solid rgba(45, 212, 191, 0.35);
+    background: rgba(11, 28, 44, 0.85);
+    color: var(--teal);
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+}
+.nav-btn:hover { background: rgba(45, 212, 191, 0.15); }
+.nav-btn.prev { left: 0.75rem; }
+.nav-btn.next { right: 0.75rem; }
