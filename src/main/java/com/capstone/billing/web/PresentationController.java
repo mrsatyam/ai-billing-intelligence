@@ -10,4 +10,9 @@ public class PresentationController {
     public String presentation() {
         return "presentation";
     }
+
+    @GetMapping("/capstone")
+    public String capstone() {
+        return "capstone";
+    }
 }
